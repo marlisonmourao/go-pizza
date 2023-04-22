@@ -5,6 +5,8 @@ import { ThemeProvider } from 'styled-components/native'
 
 import { Loading } from '@components/Loading'
 import theme from './src/theme'
+import { SignIn } from '@screens/SignIn'
+import { StatusBar } from 'react-native'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -12,8 +14,14 @@ export default function App() {
     DMSerifDisplay_400Regular,
   })
 
-  if (!fontsLoaded) {
-    ;<Loading />
-  }
-  return <ThemeProvider theme={theme}></ThemeProvider>
+  return (
+    <ThemeProvider theme={theme}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      {fontsLoaded ? <SignIn /> : <Loading />}
+    </ThemeProvider>
+  )
 }
