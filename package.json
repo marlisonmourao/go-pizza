@@ -9,17 +9,24 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/dm-sans": "^0.2.3",
+    "@expo-google-fonts/dm-serif-display": "^0.2.3",
     "@types/react": "~18.0.27",
     "expo": "~48.0.11",
     "expo-splash-screen": "~0.18.1",
     "expo-status-bar": "~1.4.4",
+    "install": "^0.13.0",
+    "npx": "^10.2.2",
     "react": "18.2.0",
     "react-native": "0.71.6",
+    "styled-components": "^5.3.9",
     "typescript": "^4.9.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@rocketseat/eslint-config": "^1.2.0",
+    "@types/styled-components": "^5.1.26",
+    "@types/styled-components-react-native": "^5.2.1",
     "babel-plugin-module-resolver": "^5.0.0",
     "eslint": "^8.39.0"
   },
