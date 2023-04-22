@@ -1,10 +1,9 @@
-import React from 'react'
 import { Container, LoadingIndicator } from './styles'
 
 export function Loading() {
   return (
     <Container>
-      <LoadingIndicator size={20} color="green" />
+      <LoadingIndicator size={20} color="red" />
     </Container>
   )
 }
