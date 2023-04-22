@@ -28,4 +28,4 @@ export default {
     TITLE: 'DMSerifDisplay_400Regular',
     TEXT: 'DMSans_400Regular',
   },
-}
+} as const
