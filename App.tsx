@@ -2,11 +2,13 @@ import { useFonts, DMSans_400Regular } from '@expo-google-fonts/dm-sans'
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display'
 
 import { ThemeProvider } from 'styled-components/native'
+import { StatusBar } from 'react-native'
 
 import { Loading } from '@components/Loading'
 import theme from './src/theme'
 import { SignIn } from '@screens/SignIn'
-import { StatusBar } from 'react-native'
+
+import { AuthProvider } from '@contexts/auth'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -21,7 +23,7 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <SignIn /> : <Loading />}
+      <AuthProvider>{fontsLoaded ? <SignIn /> : <Loading />}</AuthProvider>
     </ThemeProvider>
   )
 }
