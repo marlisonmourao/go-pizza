@@ -1,20 +1,30 @@
 import { createContext, ReactNode, useState } from 'react'
 import { Alert } from 'react-native'
+
 import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
 
 type AuthProviderProps = {
   children: ReactNode
 }
 
+type User = {
+  id: string
+  name: string
+  isAdmin: boolean
+}
+
 type AuthContextData = {
   singIn: (email: string, password: string) => Promise<void>
   isLogin: boolean
+  user: User | null
 }
 
 export const AuthContext = createContext({} as AuthContextData)
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isLogin, setIsLogin] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
 
   async function singIn(email: string, password: string) {
     if (!email || !password) {
@@ -26,7 +36,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
     auth()
       .signInWithEmailAndPassword(email, password)
       .then((account) => {
-        console.log(account)
+        firestore()
+          .collection('users')
+          .doc(account.user.uid)
+          .get()
+          .then((profile) => {
+            const { name, isAdmin } = profile.data() as User
+
+            if (profile.exists) {
+              const userData = {
+                id: account.user.uid,
+                name,
+                isAdmin,
+              }
+              setUser(userData)
+            }
+          })
+          .catch(() => Alert.alert('Login', 'Erro ao fazer login.'))
       })
       .catch((error) => {
         const { code } = error
@@ -41,7 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ singIn, isLogin }}>
+    <AuthContext.Provider value={{ singIn, isLogin, user }}>
       {children}
     </AuthContext.Provider>
   )
