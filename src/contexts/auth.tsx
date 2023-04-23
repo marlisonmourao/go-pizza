@@ -3,28 +3,24 @@ import { Alert } from 'react-native'
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import { userDTO } from '@dtos/userDTO'
+import { storageUserSave } from '@storage/storageUser'
 
 type AuthProviderProps = {
   children: ReactNode
 }
 
-type User = {
-  id: string
-  name: string
-  isAdmin: boolean
-}
-
 type AuthContextData = {
   singIn: (email: string, password: string) => Promise<void>
   isLogin: boolean
-  user: User | null
+  user: userDTO | null
 }
 
 export const AuthContext = createContext({} as AuthContextData)
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isLogin, setIsLogin] = useState(false)
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<userDTO | null>(null)
 
   async function singIn(email: string, password: string) {
     if (!email || !password) {
@@ -40,8 +36,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           .collection('users')
           .doc(account.user.uid)
           .get()
-          .then((profile) => {
-            const { name, isAdmin } = profile.data() as User
+          .then(async (profile) => {
+            const { name, isAdmin } = profile.data() as userDTO
 
             if (profile.exists) {
               const userData = {
@@ -50,6 +46,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 isAdmin,
               }
               setUser(userData)
+              await storageUserSave(userData)
             }
           })
           .catch(() => Alert.alert('Login', 'Erro ao fazer login.'))
