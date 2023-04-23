@@ -1,10 +1,10 @@
-import { createContext, ReactNode, useState } from 'react'
+import { createContext, ReactNode, useEffect, useState } from 'react'
 import { Alert } from 'react-native'
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import { userDTO } from '@dtos/userDTO'
-import { storageUserSave } from '@storage/storageUser'
+import { storageUserGet, storageUserSave } from '@storage/storageUser'
 
 type AuthProviderProps = {
   children: ReactNode
@@ -62,6 +62,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
       })
       .finally(() => setIsLogin(false))
   }
+
+  async function loadUserStorageData() {
+    try {
+      setIsLogin(true)
+
+      const userLogged = await storageUserGet()
+      console.log(userLogged)
+      setUser(userLogged)
+      setIsLogin(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    loadUserStorageData()
+  }, [])
 
   return (
     <AuthContext.Provider value={{ singIn, isLogin, user }}>
