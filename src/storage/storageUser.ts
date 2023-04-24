@@ -14,4 +14,8 @@ async function storageUserGet() {
   return user
 }
 
-export { storageUserSave, storageUserGet }
+async function storageUserRemove() {
+  AsyncStorage.removeItem(USER_COLLECTION)
+}
+
+export { storageUserSave, storageUserGet, storageUserRemove }

@@ -4,7 +4,11 @@ import { Alert } from 'react-native'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import { userDTO } from '@dtos/userDTO'
-import { storageUserGet, storageUserSave } from '@storage/storageUser'
+import {
+  storageUserGet,
+  storageUserRemove,
+  storageUserSave,
+} from '@storage/storageUser'
 
 type AuthProviderProps = {
   children: ReactNode
@@ -12,6 +16,7 @@ type AuthProviderProps = {
 
 type AuthContextData = {
   singIn: (email: string, password: string) => Promise<void>
+  signOut: () => Promise<void>
   isLogin: boolean
   user: userDTO | null
 }
@@ -76,12 +81,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function signOut() {
+    await auth().signOut()
+    await storageUserRemove()
+  }
+
   useEffect(() => {
     loadUserStorageData()
   }, [])
 
   return (
-    <AuthContext.Provider value={{ singIn, isLogin, user }}>
+    <AuthContext.Provider value={{ singIn, isLogin, user, signOut }}>
       {children}
     </AuthContext.Provider>
   )
