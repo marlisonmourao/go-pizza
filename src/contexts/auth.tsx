@@ -17,6 +17,7 @@ type AuthProviderProps = {
 type AuthContextData = {
   singIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  fogotPassword: (email: string) => Promise<void>
   isLogin: boolean
   user: userDTO | null
 }
@@ -86,12 +87,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await storageUserRemove()
   }
 
+  async function fogotPassword(email: string) {
+    if (!email) {
+      return Alert.alert('Recuperar senha', 'Informe e-mail.')
+    }
+    await auth()
+      .sendPasswordResetEmail(email)
+      .then(() => Alert.alert('Recuperar senha', 'E-mail enviado.'))
+      .catch(() =>
+        Alert.alert(
+          'Recuperar senha',
+          'Não foi possível enviar o e-mail para redefinir a senha.',
+        ),
+      )
+  }
+
   useEffect(() => {
     loadUserStorageData()
   }, [])
 
   return (
-    <AuthContext.Provider value={{ singIn, isLogin, user, signOut }}>
+    <AuthContext.Provider
+      value={{ singIn, isLogin, user, signOut, fogotPassword }}
+    >
       {children}
     </AuthContext.Provider>
   )
