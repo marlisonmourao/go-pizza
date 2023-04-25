@@ -74,7 +74,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLogin(true)
 
       const userLogged = await storageUserGet()
-      console.log(userLogged)
       setUser(userLogged)
       setIsLogin(false)
     } catch (error) {
