@@ -15,6 +15,7 @@ import {
 
 import happyEmoji from '@assets/happy.png'
 import { Search } from '@components/Search'
+import { ProductCard } from '@components/ProductCard'
 
 export function Home() {
   const { COLORS } = useTheme()
@@ -38,6 +39,15 @@ export function Home() {
         <Title>Cardápio</Title>
         <MenuItemsNumber>10 pizzas</MenuItemsNumber>
       </MenuHeader>
+
+      <ProductCard
+        data={{
+          id: '1',
+          name: 'Pizza',
+          description: 'Pizza de mussarela',
+          photo_url: 'https://picsum.photos/200/300',
+        }}
+      />
     </Container>
   )
 }

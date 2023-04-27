@@ -6,7 +6,7 @@ import { StatusBar } from 'react-native'
 
 import { Loading } from '@components/Loading'
 import theme from './src/theme'
-import { SignIn } from '@screens/SignIn'
+import { Home } from '@screens/Home'
 
 import { AuthProvider } from '@contexts/auth'
 
@@ -23,7 +23,7 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      <AuthProvider>{fontsLoaded ? <SignIn /> : <Loading />}</AuthProvider>
+      <AuthProvider>{fontsLoaded ? <Home /> : <Loading />}</AuthProvider>
     </ThemeProvider>
   )
 }
