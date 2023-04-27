@@ -1,6 +1,8 @@
-import { TouchableOpacity } from 'react-native'
+import { useEffect, useState } from 'react'
+import { Alert, TouchableOpacity } from 'react-native'
 import { useTheme } from 'styled-components'
 import { MaterialIcons } from '@expo/vector-icons'
+import firestore from '@react-native-firebase/firestore'
 
 import {
   Container,
@@ -16,9 +18,41 @@ import {
 import happyEmoji from '@assets/happy.png'
 import { Search } from '@components/Search'
 import { ProductCard } from '@components/ProductCard'
+import { ProductProps } from '@dtos/productDTO'
+import { FlatList } from 'react-native-gesture-handler'
 
 export function Home() {
+  const [pizzas, setPizzas] = useState<ProductProps[]>([])
+
   const { COLORS } = useTheme()
+
+  function fetchPizzas(value: string) {
+    const formatedValue = value.toLowerCase().trim()
+
+    firestore()
+      .collection('pizzas')
+      .orderBy('name_insensitive')
+      .startAt(formatedValue)
+      .endAt(`${formatedValue}\uf8ff`)
+      .get()
+      .then((response) => {
+        const data = response.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          }
+        }) as ProductProps[]
+
+        setPizzas(data)
+      })
+      .catch(() =>
+        Alert.alert('Consulta', 'Não foi possível consultar os dados.'),
+      )
+  }
+
+  useEffect(() => {
+    fetchPizzas('')
+  }, [])
 
   return (
     <Container>
@@ -40,12 +74,15 @@ export function Home() {
         <MenuItemsNumber>10 pizzas</MenuItemsNumber>
       </MenuHeader>
 
-      <ProductCard
-        data={{
-          id: '1',
-          name: 'Pizza',
-          description: 'Pizza de mussarela',
-          photo_url: 'https://picsum.photos/200/300',
+      <FlatList
+        data={pizzas}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <ProductCard data={item} />}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: 20,
+          paddingBottom: 125,
+          marginHorizontal: 24,
         }}
       />
     </Container>

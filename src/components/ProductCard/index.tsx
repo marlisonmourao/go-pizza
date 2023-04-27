@@ -24,7 +24,7 @@ export function ProductCard({ data, ...rest }: Props) {
 
   return (
     <Container>
-      <Content {...rest}>
+      <Content {...rest} activeOpacity={0.7}>
         <Image source={{ uri: data.photo_url }} alt="" />
 
         <Details>
