@@ -6,9 +6,9 @@ import { StatusBar } from 'react-native'
 
 import { Loading } from '@components/Loading'
 import theme from './src/theme'
-import { Home } from '@screens/Home'
 
 import { AuthProvider } from '@contexts/auth'
+import { Routes } from '@routes/index'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -23,7 +23,7 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      <AuthProvider>{fontsLoaded ? <Home /> : <Loading />}</AuthProvider>
+      <AuthProvider>{fontsLoaded ? <Routes /> : <Loading />}</AuthProvider>
     </ThemeProvider>
   )
 }
