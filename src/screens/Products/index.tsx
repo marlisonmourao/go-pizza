@@ -116,10 +116,12 @@ export function Products() {
         photo_path: reference.fullPath,
       })
       .then(() => {
-        Alert.alert('Cadastro', 'Pizza cadastrada com sucesso.')
         navigation.navigate('home')
       })
-      .catch(() => Alert.alert('Cadastro', 'Erro ao cadastrar pizza.'))
+      .catch(() => {
+        setIsLoading(false)
+        Alert.alert('Cadastro', 'Erro ao cadastrar pizza.')
+      })
 
     setIsLoading(false)
   }
@@ -197,7 +199,7 @@ export function Products() {
           <InputGroup>
             <InputGroupHeader>
               <Label>Descrição</Label>
-              <MaxCaracters>0 de 60 caracteres</MaxCaracters>
+              <MaxCaracters>{description.length} de 60 caracteres</MaxCaracters>
             </InputGroupHeader>
 
             <Input
