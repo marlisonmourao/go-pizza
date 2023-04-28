@@ -1,8 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Platform, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
+
+import { useRoute } from '@react-navigation/native'
+
+import { ProductNavigationProps } from 'src/@types/navigation'
 
 import {
   Container,
@@ -23,6 +27,16 @@ import { Photo } from '@components/Photo'
 import { InputPrice } from '@components/InputPrice'
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
+import { ProductProps } from '@dtos/productDTO'
+
+type PizzaResponse = ProductProps & {
+  photo_path: string
+  price_sizes: {
+    p: string
+    m: string
+    g: string
+  }
+}
 
 export function Products() {
   const [name, setName] = useState('')
@@ -32,6 +46,10 @@ export function Products() {
   const [priceSizesG, setPriceSizesG] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [image, setImage] = useState('')
+  const [photoPath, setPhotoPath] = useState('')
+
+  const route = useRoute()
+  const { id } = route.params as ProductNavigationProps
 
   async function handlePickerImage() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync()
@@ -95,6 +113,26 @@ export function Products() {
 
     setIsLoading(false)
   }
+
+  useEffect(() => {
+    if (id) {
+      firestore()
+        .collection('pizzas')
+        .doc(id)
+        .get()
+        .then((response) => {
+          const product = response.data() as PizzaResponse
+
+          setName(product.name)
+          setImage(product.photo_url)
+          setPhotoPath(product.photo_path)
+          setDescription(product.description)
+          setPriceSizesP(product.price_sizes.p)
+          setPriceSizesM(product.price_sizes.m)
+          setPriceSizesG(product.price_sizes.g)
+        })
+    }
+  }, [id])
 
   return (
     <Container behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
