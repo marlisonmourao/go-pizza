@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Alert, TouchableOpacity, FlatList } from 'react-native'
 import { useTheme } from 'styled-components'
 import { MaterialIcons } from '@expo/vector-icons'
 import firestore from '@react-native-firebase/firestore'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 import {
   Container,
@@ -13,6 +13,7 @@ import {
   Header,
   MenuHeader,
   MenuItemsNumber,
+  NewProductButton,
   Title,
 } from './styles'
 
@@ -65,9 +66,15 @@ export function Home() {
     navigation.navigate('product', { id })
   }
 
-  useEffect(() => {
-    fetchPizzas('')
-  }, [])
+  function handleAdd() {
+    navigation.navigate('product', {})
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPizzas('')
+    }, []),
+  )
 
   return (
     <Container>
@@ -106,6 +113,12 @@ export function Home() {
           paddingBottom: 125,
           marginHorizontal: 24,
         }}
+      />
+
+      <NewProductButton
+        title="Cadastrar"
+        type="secondary"
+        onPress={handleAdd}
       />
     </Container>
   )
