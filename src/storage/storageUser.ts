@@ -9,7 +9,7 @@ async function storageUserSave(user: userDTO) {
 async function storageUserGet() {
   const storage = await AsyncStorage.getItem(USER_COLLECTION)
 
-  const user: userDTO = storage ? JSON.parse(storage) : {}
+  const user: userDTO = storage ? JSON.parse(storage) : null
 
   return user
 }
