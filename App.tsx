@@ -9,6 +9,7 @@ import theme from './src/theme'
 
 import { AuthProvider } from '@contexts/auth'
 import { Routes } from '@routes/index'
+import { Orders } from '@screens/Orders'
 
 export default function App() {
   const [fontsLoaded] = useFonts({

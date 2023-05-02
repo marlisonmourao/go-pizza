@@ -82,7 +82,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function signOut() {
-    await auth().signOut()
+    await auth()
+      .signOut()
+      .catch((error) => {
+        console.log(error)
+        return Alert.alert('Não foi possível sair.')
+      })
     await storageUserRemove()
   }
 
@@ -103,7 +108,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     loadUserStorageData()
-  }, [])
+  }, [user])
 
   return (
     <AuthContext.Provider

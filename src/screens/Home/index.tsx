@@ -2,8 +2,11 @@ import { useCallback, useState } from 'react'
 import { Alert, TouchableOpacity, FlatList } from 'react-native'
 import { useTheme } from 'styled-components'
 import { MaterialIcons } from '@expo/vector-icons'
-import firestore from '@react-native-firebase/firestore'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
+
+import { useAuth } from '@hooks/useAuth'
+
+import firestore from '@react-native-firebase/firestore'
 
 import {
   Container,
@@ -26,6 +29,7 @@ export function Home() {
   const [pizzas, setPizzas] = useState<ProductProps[]>([])
   const [search, setSearch] = useState('')
 
+  const { signOut, user } = useAuth()
   const { COLORS } = useTheme()
   const navigation = useNavigation()
 
@@ -63,7 +67,8 @@ export function Home() {
   }
 
   function handleOpen(id: string) {
-    navigation.navigate('product', { id })
+    const route = user?.isAdmin ? 'product' : 'order'
+    navigation.navigate(route, { id })
   }
 
   function handleAdd() {
@@ -85,7 +90,12 @@ export function Home() {
         </Greeting>
 
         <TouchableOpacity activeOpacity={0.7}>
-          <MaterialIcons name="logout" size={24} color={COLORS.TITLE} />
+          <MaterialIcons
+            name="logout"
+            size={24}
+            color={COLORS.TITLE}
+            onPress={signOut}
+          />
         </TouchableOpacity>
       </Header>
 
@@ -115,11 +125,13 @@ export function Home() {
         }}
       />
 
-      <NewProductButton
-        title="Cadastrar"
-        type="secondary"
-        onPress={handleAdd}
-      />
+      {user?.isAdmin && (
+        <NewProductButton
+          title="Cadastrar"
+          type="secondary"
+          onPress={handleAdd}
+        />
+      )}
     </Container>
   )
 }
